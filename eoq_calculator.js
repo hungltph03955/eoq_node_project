@@ -5,9 +5,13 @@ const D = 1040; // Nhu cầu hàng năm (20 chiếc/tuần × 52 tuần)
 const S = 60;   // Chi phí đặt hàng mỗi lần (USD)
 const H = 25;   // Chi phí lưu kho mỗi chiếc mỗi năm (25% × 100 USD)
 
-// Tạo mảng số lượng đặt hàng
+// Tạo mảng số lượng đặt hàng 
 const Q = [];
 for (let i = 50; i <= 1000; i += 10) Q.push(i);
+// cái cây này đang mô phỏng việc số lượng đặt hàng thay đổi không chỉ là 400 chiếc theo như bài mà còn nhiều trường hợp nữa 
+// có thể mo phỏng bài toán nhập 400 chiếc như sau 
+// const Q = [400]
+// console.log("Q___11 : ", Q);
 
 // Tính toán chi phí
 const orderingCost = Q.map(q => (D / q) * S * Math.ceil(D / q)); // Chi phí đặt hàng
@@ -16,6 +20,9 @@ const totalCost = Q.map((q, index) => orderingCost[index] + holdingCost[index]);
 
 // Tính EOQ
 const EOQ = Math.sqrt((2 * D * S) / H);
+
+// console.log("EOQ_111 : ", EOQ);
+
 const minTotalCost = (D / EOQ) * S + (EOQ / 2) * H;
 
 // Cấu hình và vẽ biểu đồ
