@@ -20,9 +20,16 @@ const totalCost = Q.map((q, index) => orderingCost[index] + holdingCost[index]);
 
 // Tính EOQ
 const EOQ = Math.sqrt((2 * D * S) / H);
+console.log("EOQ_111 : ", EOQ);
 
-// console.log("EOQ_111 : ", EOQ);
-
+// Tìm chỉ số gần nhất của EOQ trong mảng Q để đánh dấu điểm cắt
+const closestQIndex = Q.reduce((closest, current, index) => {
+    return Math.abs(current - EOQ) < Math.abs(Q[closest] - EOQ) ? index : closest;
+  }, 0);
+  
+const closestQ = Q[closestQIndex];
+const intersectionHoldingCost = holdingCost[closestQIndex];
+const intersectionOrderingCost = orderingCost[closestQIndex];
 const minTotalCost = (D / EOQ) * S + (EOQ / 2) * H;
 
 // Cấu hình và vẽ biểu đồ
@@ -72,24 +79,60 @@ const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, chartCallback }
           legend: { position: 'top' },
           annotation: {
             annotations: [
-              {
-                type: 'line',
-                mode: 'vertical',
-                scaleID: 'x',
-                value: EOQ,
-                borderColor: 'red',
-                borderWidth: 2,
-                label: { content: `EOQ ≈ ${EOQ.toFixed(0)} chiếc`, enabled: true },
-              },
-              {
-                type: 'line',
-                mode: 'horizontal',
-                scaleID: 'y',
-                value: minTotalCost,
-                borderColor: 'green',
-                borderWidth: 2,
-                label: { content: `Tổng chi phí tối thiểu ≈ ${minTotalCost.toFixed(0)} USD`, enabled: true },
-              },
+            //   {
+            //     type: 'line',
+            //     mode: 'vertical',
+            //     scaleID: 'x',
+            //     value: EOQ,
+            //     borderColor: 'red',
+            //     borderWidth: 2,
+            //     label: { content: `EOQ ≈ ${EOQ.toFixed(0)} chiếc`, enabled: true },
+            //   },
+            //   {
+            //     type: 'line',
+            //     mode: 'horizontal',
+            //     scaleID: 'y',
+            //     value: minTotalCost,
+            //     borderColor: 'green',
+            //     borderWidth: 2,
+            //     label: { content: `Tổng chi phí tối thiểu ≈ ${minTotalCost.toFixed(0)} USD`, enabled: true },
+            //   },
+                {
+                    type: 'line',
+                    mode: 'vertical',
+                    scaleID: 'x',
+                    value: closestQ, // Điểm gần nhất với EOQ trên trục x
+                    borderColor: 'purple',
+                    borderWidth: 2,
+                    label: {
+                        enabled: true,
+                        content: `EOQ ≈ ${EOQ.toFixed(0)} chiếc (gần ${closestQ})`,
+                        position: 'top',
+                    },
+                },
+                {
+                    type: 'point',
+                    mode: 'point',
+                    scaleID: 'x',
+                    xValue: closestQ,
+                    yValue: intersectionHoldingCost, // Điểm cắt của chi phí lưu kho
+                    backgroundColor: 'purple',
+                    radius: 5,
+                    label: {
+                        enabled: true,
+                        content: `Điểm cắt ≈ ${intersectionHoldingCost.toFixed(0)} USD`,
+                        position: 'top',
+                    },
+                },
+                {
+                    type: 'point',
+                    mode: 'point',
+                    scaleID: 'x',
+                    xValue: closestQ,
+                    yValue: intersectionOrderingCost, // Điểm cắt của chi phí đặt hàng
+                    backgroundColor: 'purple',
+                    radius: 5,
+                },
             ],
           },
         },
