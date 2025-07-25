@@ -1,3 +1,5 @@
 eoq_env
 node_modules
 *.png
+.vscode/
+.zed/

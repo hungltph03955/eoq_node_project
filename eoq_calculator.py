@@ -6,14 +6,18 @@ D = 1040  # Nhu cầu hàng năm (20 chiếc/tuần × 52 tuần)
 S = 60    # Chi phí đặt hàng mỗi lần (USD)
 H = 25    # Chi phí lưu kho mỗi chiếc mỗi năm (25% × 100 USD)
 Q = np.arange(50, 1000, 5)  # Phạm vi số lượng đặt hàng, bước nhảy 5 để chính xác hơn
+print(Q);
 
 # Tính toán chi phí
-ordering_cost = (D / Q) * S * np.ceil(D / Q)  # Chi phí đặt hàng
-holding_cost = (Q / 2) * H                    # Chi phí lưu kho
-total_cost = ordering_cost + holding_cost     # Tổng chi phí
+# ordering_cost = (D / Q) * S * np.ceil(D / Q)  # Chi phí đặt hàng
+# holding_cost = (Q / 2) * H                    # Chi phí lưu kho
+# total_cost = ordering_cost + holding_cost     # Tổng chi phí
+ordering_cost = (D / Q) * S     # Chi phí đặt hàng (liên tục)
+holding_cost = (Q / 2) * H      # Chi phí lưu kho
+total_cost = ordering_cost + holding_cost  # Tổng chi phí
 
 # Tính EOQ
-EOQ = np.sqrt((2 * D * S) / H)
+EOQ = np.sqrt((2 * D * S) / H) # căn bậc 2 
 min_total_cost = (D / EOQ) * S + (EOQ / 2) * H
 
 # Tìm chỉ số gần nhất của EOQ trong mảng Q
@@ -21,6 +25,13 @@ closestQIndex = np.abs(Q - EOQ).argmin()
 closestQ = Q[closestQIndex]
 intersection_holding_cost = holding_cost[closestQIndex]
 intersection_ordering_cost = ordering_cost[closestQIndex]
+
+# Kiểm tra lý thuyết tại EOQ
+print(f"Tại EOQ ≈ {EOQ:.2f} chiếc:")
+print(f"Chi phí đặt hàng: {(D / EOQ) * S:.2f} USD")
+print(f"Chi phí lưu kho: {(EOQ / 2) * H:.2f} USD")
+print(f"Tổng chi phí: {min_total_cost:.2f} USD")
+print("(Hai chi phí bằng nhau, khớp lý thuyết)")
 
 # Vẽ biểu đồ
 plt.figure(figsize=(12, 8))  # Kích thước lớn hơn để dễ đọc
