@@ -25,11 +25,32 @@ class TowBinSystem:
         self.days += 1
         # Rút hàng từ ngăn 1 trước 
         if self.bin1 >= self.daily_demand:
-            self.bin1 - self.daily_demand
+            self.bin1 -= self.daily_demand
+            print(f"Ngày {self.days}: Ngăn 1 còn lại là:  {self.bin1} đơn vị.")
         else:
             # lúc này ngăn 1 đã hết và chuyển sang rút ngăn 2
-            
-
-
+            remaining = self.daily_demand - self.bin1
+            self.bin1 = 0
+            # đoạn này là trừ lượng mua hàng của ngày hôm nay sang cho ngăn 2 trước
+            self.bin2 -= remaining
+            print(f"Ngày {self.days}: Ngăn 1 đã hết ngăn 2 còn lại:  {self.bin2} đơn vị.")
+            if not self.order_placed:
+                print(f"Ngày {self.days}: Ngăn 1 trống! Đặt hàng {self.Q} đơn vị.")
+                self.order_placed = True
+                self.order_day = self.days
+        
+        # kiểm tra hàng về sau lead time
+        if self.order_placed and self.days == self.order_day + self.lead_time:
+            print(f"Ngày {self.days}: Hàng mới {self.Q} đơn vị về.")
+            fill_bin2 = min(self.Q, self.bin2_level - self.bin2)
+            self.bin2 += fill_bin2
+            remaining = self.Q - fill_bin2
+            # phần dư thì cho lại vào ngăn 1:
+            self.bin1 += remaining
+            self.order_placed = False
+        
+        print(f"Ngày {self.days}: Ngăn 1 = {self.bin1}, Ngăn 2 = {self.bin2}")
 
 system = TowBinSystem(bin1_initial = 150, bin2_level = 50, Q = 200, daily_demand = 10, lead_time = 5)
+for _ in range(20): 
+    system.simulate_day()
