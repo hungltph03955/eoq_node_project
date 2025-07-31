@@ -1,0 +1,70 @@
+# <P> khoảng thời gian (cố định)
+# <Q> số lượng đặt hàng (có thể thay đổi)
+# <T> mức tồn kho mục tiêu
+# IP = OH + SR - BO
+# Số lượng đặt hàng cho đơn hàng mới sẽ là : Q = T - IP
+# Giả sử anh quản lý một cửa hàng bán đèn LED:
+
+# Nhu cầu (D): 10 đèn/tuần (cố định). // nhu cầu trong 1 khoảng thời gian cố định 
+# Thời gian giao hàng (L): 1 tuần.(7 day) 
+# Kỳ kiểm tra định kỳ (P): 2 tuần.
+# Tồn kho ban đầu (OH): 50 đèn.
+# Hàng đang giao (SR): 0 đèn.
+# Đơn hàng dự trữ (BO): 0 đèn.
+
+# Mức tồn kho mục tiêu (T):
+# T = D * (P + L) = 10 * (2 + 1) = 30 đèn.
+
+# Mức tồn kho hiện tại (IP):
+# IP = OH + SR - BO = 50 + 0 - 0 = 50 đèn.
+
+#Số lượng đặt hàng (Q):
+# Q = T - IP = 30 - 50 = -20 (âm, không đặt hàng vì tồn kho đủ).
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Dữ liệu giả định
+D = 10  # Nhu cầu/tuần
+L = 1   # Thời gian giao hàng (tuần)
+P = 2   # Kỳ kiểm tra định kỳ (tuần)
+OH = 50 # Tồn kho ban đầu
+SR = 0  # Hàng đang giao
+BO = 0  # Đơn hàng dự trữ
+weeks = np.arange(1, 9)  # 8 tuần (4 chu kỳ P)
+# Mô phỏng tồn kho 
+
+inventory = [OH] # gán mức tồn kho ban đầu 
+orders = [] # lưu số lượng đặt hàng 
+for week in weeks:
+    current_inventory = inventory[-1] - D
+    if current_inventory < 0:
+        BO + abs(current_inventory)
+        current_inventory = 0
+    inventory.append(current_inventory)
+
+    # kiểm tra định kì vào cuối mỗi P 
+    if (week - 1) % P == 0 and week > 1: # bắt đầu từ tuần thứ 2 
+        T = D * (P + L) # mức tồn kho mục tiêu
+        IP = current_inventory + SR - BO
+        Q = max(0, T - IP) # không đặt số lượng là âm 
+        orders.append(Q)
+        if Q > 0:
+            print(f"Tuần {week}: IP = {IP}, T = {T}, Đặt {Q} đèn (hàng về tuần {week + L}).")
+            SR = Q # hàng đang giao
+        else:
+            orders.append(0)
+            SR = 0
+        
+        # Hàng về sau lead time
+        if week > L and (week - L - 1) % P == 0:
+            
+
+
+
+
+
+
+
+
+
